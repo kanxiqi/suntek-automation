@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://www.meridian-motion.example/sitemap.xml
+Sitemap: https://www.stepgearbox.com/sitemap.xml
