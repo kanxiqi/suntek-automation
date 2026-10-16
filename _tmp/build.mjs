@@ -90,6 +90,20 @@ function robots() {
 /* ---------- build ---------- */
 const frames = allFrames();
 
+/* Pages live at <page>.html on disk, but the site is served with clean URLs:
+   the host rewrites /<lang>/<page> -> <page>.html and redirects the .html form.
+   So strip .html from every internal href (nav, footer, breadcrumbs, body links,
+   search) at emit time. index.html becomes the directory URL. */
+function cleanHref(html) {
+  return html.replace(/href="([^"]*?)\.html([^"]*)"/g, function (m, pre, post) {
+    if (/(^|\/)index$/.test(pre)) {
+      const dir = pre.slice(0, -5); // drop "index"
+      return 'href="' + (dir === "" ? "./" : dir) + '"';
+    }
+    return 'href="' + pre + post + '"';
+  });
+}
+
 function writeHtml(langDir, page, lang) {
   const html = [
     head(page, lang),
@@ -101,7 +115,7 @@ function writeHtml(langDir, page, lang) {
     floats(lang),
     scripts(),
   ].join("\n");
-  fs.writeFileSync(path.join(langDir, page.file), html + "\n", "utf8");
+  fs.writeFileSync(path.join(langDir, page.file), cleanHref(html) + "\n", "utf8");
   console.log("built " + lang + "/" + page.file + "  (" + html.length + " chars)");
 }
 

@@ -4,8 +4,15 @@
 import { DOMAIN, LANGS, BRAND, CONTACT, str, augment, SEO_KEYWORDS } from "./i18n.mjs";
 import { GEAR_SERIES, CATEGORIES } from "./stepper-cat.mjs";
 
+/* Clean URLs: pages are physically <page>.html but the host serves them at the
+   extensionless path and 307-redirects <page>.html -> <page>. So every URL we
+   emit (canonical, hreflang, og:url, sitemap, internal links) must be clean. */
+function relPath(file) {
+  return file === "index.html" ? "" : file.replace(/\.html$/, "");
+}
+
 export function pageUrl(lang, file) {
-  return DOMAIN + "/" + lang + "/" + (file === "index.html" ? "" : file);
+  return DOMAIN + "/" + lang + "/" + relPath(file);
 }
 
 const BRAND_MARK =
@@ -46,7 +53,7 @@ function website() {
     name: BRAND.short.en, publisher: { "@id": DOMAIN + "/#organization" },
     potentialAction: {
       "@type": "SearchAction",
-      target: DOMAIN + "/en/products.html?q={search_term_string}",
+      target: DOMAIN + "/en/products?q={search_term_string}",
       "query-input": "required name=search_term_string",
     },
   };
@@ -76,7 +83,7 @@ function breadcrumb(crumbs, lang, file) {
     itemListElement: crumbs.map(function (c, i) {
       return {
         "@type": "ListItem", position: i + 1, name: c.name,
-        item: DOMAIN + "/" + lang + "/" + (c.to ? c.to : file),
+        item: DOMAIN + "/" + lang + "/" + relPath(c.to ? c.to : file),
       };
     }),
   };
