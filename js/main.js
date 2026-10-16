@@ -220,7 +220,7 @@
       shown.forEach(function (p) {
         var a = document.createElement("a");
         a.className = "search-result";
-        a.href = p.url;
+        a.href = p.url.replace(/\.html/, "");
         a.innerHTML = '<img src="' + PH + 'product-square.webp" alt="" width="56" height="42" loading="lazy" decoding="async">' +
           "<span><strong>" + (p.name[lang] || p.name.en) + "</strong><small>" + (p.series[lang] || p.series.en) + " &middot; " + p.frame + " &middot; " + p.torque + "</small></span>" +
           '<span class="tag tag--outline">' + I18N.open + "</span>";
